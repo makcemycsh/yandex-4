@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const port = 8000;
+
+const fs = require('fs');
 let timeStart = null;
 let time = null;
 
@@ -9,6 +11,12 @@ app.get('/server', (request, response) => {
   let now = Date.now();
   time = new Date(now - timeStart);
   response.status(200).send(`Время прошедшее с запуска сервера: ${(time.getUTCHours())}ч : ${(time.getMinutes())}мин : ${(time.getSeconds())}с`);
+});
+
+app.get('/api/events', (request, response) => {
+  fs.readFile('events.json', 'utf8', function (err, contents) {
+    response.status(200).send(contents);
+  });
 });
 
 app.get('/*', (request, response) => {
@@ -22,3 +30,4 @@ app.listen(port, (err) => {
   timeStart = Date.now();
   console.log(`server is listening on ${port}`)
 });
+
