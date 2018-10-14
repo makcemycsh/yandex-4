@@ -1,7 +1,7 @@
 {
-  "name": "camera",
+  "name": "SDI",
   "version": "1.0.1",
-  "description": "layout camera",
+  "description": "SDI homeworck",
   "author": "Shilov Maxim",
   "license": "ISC",
   "dependencies": {
@@ -24,5 +24,8 @@
     "gulp-uglify": "^3.0.1",
     "gulp-watch": "^5.0.1",
     "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.7.0"
   }
 }

@@ -1,7 +1,3 @@
-function is_touch_device() {
-  return !!('ontouchstart' in window);
-}
-
 // Проверяем тип устройства
 if (is_touch_device()) $(document.body).addClass('is-touch');
 else $(document.body).addClass('no-touch');
@@ -116,11 +112,11 @@ class Handler {
   moveScroll() {
     let start = 15;
     let end = 85;
-    let persent = (this.left + this.leftLim) * 100 / (this.leftLim * 2);
+    let persent = (-this.left + this.leftLim) * 100 / (this.leftLim * 2);
     persent = persent * 0.7 + start;
     persent > end ? persent = end : '';
     persent < start ? persent = start : '';
-    this.$scroll.css('left', -persent + '%');
+    this.$scroll.css('left', persent + '%');
   }
 
   moveImg() {
@@ -151,7 +147,6 @@ class Handler {
       this.lastTap = new Date().getTime();
     }
   }
-
 
 
   pointerMove(e) {

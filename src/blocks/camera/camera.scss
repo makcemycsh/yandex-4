@@ -28,7 +28,7 @@
     display:         flex;
     align-items:     center;
     justify-content: center;
-    transition:      .3s;
+    transition:      transform .3s ease-in-out, filter .1s;
     &:hover {
       will-change: transform;
     }
@@ -44,24 +44,39 @@
     }
   }
   &__controls {
-    position:       fixed;
-    display:        flex;
-    flex-direction: row-reverse;
-    right:          40px;
-    bottom:         20px;
-    z-index:        1000;
-    opacity:        0;
-    pointer-events: none;
-    transition:     .2s ease-in-out;
+    position:        fixed;
+    display:         flex;
+    flex-direction:  row-reverse;
+    flex-wrap:       wrap;
+    right:           40px;
+    left:            40px;
+    bottom:          20px;
+    z-index:         1000;
+    opacity:         0;
+    pointer-events:  none;
+    transition:      .2s ease-in-out;
+    justify-content: space-between;
+    align-items:     flex-end;
     &-item {
-      margin-left:     16px;
+      margin-bottom:   16px;
       display:         flex;
-      align-items:     center;
-      justify-content: center;
+      align-items:     flex-end;
+      justify-content: flex-end;
       &:last-child {
-        margin-left: 0;
+        margin-bottom: 0;
       }
     }
+    .b-range {
+      width: 100%;
+      color: white;
+    }
+  }
+  &__chart {
+    .b-range {
+      margin-bottom: 20px;
+    }
+    width:     260px;
+    max-width: 260px;
   }
   &__filter {
     position: absolute;
@@ -90,9 +105,36 @@
 
 .mod-video {
   .b-camera__controls {
-    opacity:        1;
+    opacity:        .25;
     pointer-events: auto;
     transition:     .3s ease-in-out;
+    &:after {
+      content:       "";
+      position:      absolute;
+      background:    black;
+      z-index:       -1;
+      border-radius: 8px;
+      top:           -16px;
+      left:          -16px;
+      right:         -16px;
+      bottom:        -16px;
+      transition:    .3s ease-in-out;
+      opacity:       0;
+    }
+    &:hover {
+      opacity: 1;
+      &:after {
+        opacity: .65;
+      }
+    }
+  }
+  &.is-touch {
+    .b-camera__controls {
+      opacity: 1;
+      &:after {
+        opacity: 1;
+      }
+    }
   }
 }
 
