@@ -1,7 +1,5 @@
 function init() {
   let context = new (window.AudioContext || window.webkitAudioContext)();
-
-  console.log(context);
   $(".js-camera").each(function () {
     new Camera($(this), context);
   });
@@ -25,12 +23,11 @@ class Camera {
     this.buffer = 256;
     this.timer = null;
     this.chart = null;
-    this.handlers();
-
     this.context = context;
-    this.initAudioContext();
-    this.initCart();
 
+    this.handlers();
+    this.initAudioContext();
+    this.initChart();
   }
 
   changeContrast() {
@@ -58,7 +55,7 @@ class Camera {
     this.selector.css("filter", "contrast(" + this.contrast + "%) brightness(" + this.brightness + "%)");
   }
 
-  clouse() {
+  close() {
     clearInterval(this.timer);
     $("body").removeClass("mod-video");
     this.active = false;
@@ -70,13 +67,32 @@ class Camera {
     if (this.active) { return; }
     this.active = true;
     $("body").addClass("mod-video");
-    this.resrRange();
+    this.resetRange();
     this.openAnimation();
     this.video[0].muted = false;
 
     this.initAudioContext();
-    this.initCart();
+    this.initChart();
     this.timer = setInterval(() => { this.chart.update();}, 100);
+
+  }
+
+  openAnimation() {
+    let positionInfo = this.selector[0].getBoundingClientRect();
+    let heightEl = positionInfo.height;
+    let widthEl = positionInfo.width;
+    let widthWindow = document.documentElement.clientWidth;
+    let hightWindow = document.documentElement.clientHeight;
+
+    let moveLeft = positionInfo.left - ((widthWindow - widthEl) / 2);
+    let moveTop = positionInfo.top - ((hightWindow - heightEl) / 2);
+    let scale = widthWindow / widthEl;
+
+    this.selector.css({
+      "transform": "translate(" + -moveLeft + "px, " + -moveTop + "px) scale(" + scale + ")",
+      "z-index": "999"
+    });
+
 
   }
 
@@ -102,7 +118,7 @@ class Camera {
     };
   }
 
-  initCart() {
+  initChart() {
     this.chart = new Chart($("#audio"), {
       type: 'bar',
       data: {
@@ -141,29 +157,8 @@ class Camera {
       }
     });
   }
-
-  openAnimation() {
-    console.log("openAnimation");
-    let positionInfo = this.selector[0].getBoundingClientRect();
-    console.log(positionInfo);
-    let heightEl = positionInfo.height;
-    let widthEl = positionInfo.width;
-    let widthWindow = document.documentElement.clientWidth;
-    let hightWindow = document.documentElement.clientHeight;
-
-    let moveLeft = positionInfo.left - ((widthWindow - widthEl) / 2);
-    let moveTop = positionInfo.top - ((hightWindow - heightEl) / 2);
-    let scale = widthWindow / widthEl;
-
-    this.selector.css({
-      "transform": "translate(" + -moveLeft + "px, " + -moveTop + "px) scale(" + scale + ")",
-      "z-index": "999"
-    });
-
-
-  }
-
-  resrRange() {
+  
+  resetRange() {
     $($controls.contrast).val(this.contrast);
     $($controls.brightness).val(this.brightness);
     $($controls.volume).val(this.volume);
@@ -172,29 +167,26 @@ class Camera {
   resetStyles() {
     this.selector.css({
       "transform": "translate(0px, 0px) scale(1)"
-    })
+    });
     setTimeout(() => {
       this.selector.css({
         "z-index": "1"
       })
-    }, 100)
+    }, 200)
   }
-
 
   handlers() {
     $(document).keydown(e => {
       if (e.key === "Escape") {
-        this.clouse();
+        this.close();
       }
     });
     this.selector.on("click", this.open.bind(this));
-
-    $($controls.close).on("click", this.clouse.bind(this));
+    $($controls.close).on("click", this.close.bind(this));
     $($controls.contrast).on("input", debounce(this.changeContrast.bind(this), 5));
     $($controls.brightness).on("input", debounce(this.changeBrightness.bind(this), 5));
     $($controls.volume).on("input", debounce(this.changeVolume.bind(this), 5));
   }
 }
-
 
 init();

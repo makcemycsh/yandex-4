@@ -134,30 +134,8 @@
     .b-camera__controls {
       opacity: 1;
       &:after {
-        opacity: 1;
+        opacity: .15;
       }
     }
   }
-}
-
-.debag-X {
-  position:   fixed;
-  width:      2px;
-  height:     100vh;
-  left:       50%;
-  transform:  translateX(-50%);
-  z-index:    999;
-  top:        0;
-  background: red;
-}
-
-.debag-Y {
-  position:   fixed;
-  width:      100vw;
-  height:     2px;
-  top:        50%;
-  transform:  translateY(-50%);
-  z-index:    999;
-  left:       0;
-  background: red;
 }
