@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "murphy": "murphy",
-    "http-server": "http-server -p 3102 --cors='localhost:9000'",
+    "http-server": "http-server -p 3102 --cors",
     "start": "run-p http-server murphy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

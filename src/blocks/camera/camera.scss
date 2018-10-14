@@ -66,9 +66,11 @@
         margin-bottom: 0;
       }
     }
+    $thumb-color: red;
     .b-range {
       width: 100%;
       color: white;
+      @include range;
     }
   }
   &__chart {
