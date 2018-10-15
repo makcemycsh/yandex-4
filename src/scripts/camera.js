@@ -89,6 +89,8 @@ class Camera {
     let scale = widthWindow / widthEl;
 
     this.selector.css({
+      "-webkit-transform": "translate(" + -moveLeft + "px, " + -moveTop + "px) scale(" + scale + ")",
+      "-ms-transform": "translate(" + -moveLeft + "px, " + -moveTop + "px) scale(" + scale + ")",
       "transform": "translate(" + -moveLeft + "px, " + -moveTop + "px) scale(" + scale + ")",
       "z-index": "999"
     });
@@ -166,6 +168,8 @@ class Camera {
 
   resetStyles() {
     this.selector.css({
+      "-webkit-transform": "translate(0px, 0px) scale(1)",
+      "-ms-transform": "translate(0px, 0px) scale(1)",
       "transform": "translate(0px, 0px) scale(1)"
     });
     setTimeout(() => {
