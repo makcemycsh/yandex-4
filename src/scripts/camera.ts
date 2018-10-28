@@ -1,12 +1,11 @@
-import Chart from 'chart.js';
-
 function init() {
-  const context: AudioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)();
+  const context: AudioContext = new ((window as any).AudioContext
+    || (window as any).webkitAudioContext)();
   $('.js-camera').each(function () {
     new Camera($(this), context);
+    console.log($(this));
   });
 }
-
 
 interface Controls {
   close: JQuery<HTMLElement>;
@@ -39,7 +38,6 @@ class Camera {
   bands: Uint8Array | null;
   source: MediaElementAudioSourceNode | null;
   update: string | Function;
-
 
   constructor($selector: JQuery<HTMLElement>, context: any) {
     this.selector = $($selector);
@@ -133,8 +131,6 @@ class Camera {
       'transform': 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
       'z-index': '999'
     });
-
-
   }
 
   initAudioContext(): any {

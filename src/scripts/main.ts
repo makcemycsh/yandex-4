@@ -2,12 +2,44 @@
 // import Handlers = module;
 const $document: JQuery<Document> = $(document);
 const $window: JQuery<Window> = $(window);
-$document.ready(handleEvents);
 
-function handleEvents() {
+interface DataEvent {
+  [id: string]: any;
+  type: string;
+  title: string;
+  source: string;
+  time: string;
+  description: string | null;
+  icon: string;
+  size: string;
+  data: DataEventDate;
+}
+
+interface DataEventDate {
+  temperature: number | string;
+  humidity: number | string;
+  volume: number | string;
+  buttons: Array<string>;
+  albumcover: string;
+  artist: string;
+  track: Track;
+  type: string;
+  image: string;
+}
+
+interface Track {
+  name: string;
+  length: string;
+}
+
+
+$document.ready(handleDataEvents);
+
+function handleDataEvents() {
+
   // Фиксация хедера при скролле
-  $window.scroll(function () {
-    if ($(this).scrollTop() > 150) {
+  $window.scroll(function (): void {
+    if (($ as any)(this).scrollTop() > 150) {
       $('body').addClass('head-is-fixed');
       $('.head-is-fixed').css('margin-top', 125);
     } else {
@@ -23,15 +55,15 @@ function handleEvents() {
 }
 
 $.getJSON('assets/json/events.json').done(function (data) {
-  $.each(data.events, function (i, item) {
+  $.each(data.events, function (i, item: DataEvent) {
     template(item);
   });
   $('.js-pointer-event').each(function (i, e) {
-    new Handler(e);
+    new Handler($(e));
   });
 });
 
-function template(event) {
+function template(event: DataEvent) {
   const card: string = `<div class="b-card mod-${event.size}  ${event.type === 'critical' ? 'mod-attention' : ''} ">
       <div class="b-card__head">
         <header>
@@ -53,14 +85,14 @@ function template(event) {
   insertHtml($('#js-card-list'), $(card));
 }
 
-function dataMain(data: Object) {
+function dataMain(data: DataEvent) {
   return `<div class="b-card__main">
       ${data.description ? `<p class='b-card__text'>${data.description}</p>` : ''}
       ${data.data ? dataTemplate(data.data) : ''}
       </div>`;
 }
 
-function dataTemplate(data: Object) {
+function dataTemplate(data: DataEventDate) {
   return `${data.albumcover ? dataMusic(data) : ''}
   ${data.temperature ? dataWeather(data) : ''}
   ${data.buttons ? dataButtons(data) : ''}
@@ -95,7 +127,7 @@ function dataImage() {
            </div>`;
 }
 
-function dataButtons(data: Object) {
+function dataButtons(data: DataEventDate) {
   return `<div class="b-card__data">
             <div class="b-card__btns">
                 ${data.buttons.map(btn => ` <button class="b-btn ${btn === 'Да' ? 'mod-yellow' : '' }">${btn}</button>`).join('')}
@@ -103,7 +135,7 @@ function dataButtons(data: Object) {
           </div>`;
 }
 
-function dataWeather(data: Object) {
+function dataWeather(data: DataEventDate) {
   return `<div class="b-card__data">
             <div class="b-data-set">
               <div class="b-data-set__item">
@@ -120,7 +152,7 @@ function dataWeather(data: Object) {
           </div>`;
 }
 
-function dataMusic(data: Object) {
+function dataMusic(data: DataEventDate) {
   return `<div class="b-card__data">
            <div class="b-music">
             <div class="b-music__section">
