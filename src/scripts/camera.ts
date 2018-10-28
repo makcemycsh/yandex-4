@@ -84,7 +84,7 @@ class Camera {
   }
 
   filter() {
-    this.selector.css('filter', 'contrast(' + this.contrast + '%) brightness(' + this.brightness + '%)');
+    this.selector.css('filter', `contrast(${this.contrast}%) brightness(${this.brightness}%)`);
   }
 
   close() {
@@ -128,12 +128,12 @@ class Camera {
     this.selector.css({
       '-webkit-transform': 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
       '-ms-transform': 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
-      'transform': 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
-      'z-index': '999'
+      transform: 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
+      'z-index': '999',
     });
   }
 
-  initAudioContext(): any {
+  initAudioContext() {
     (this.node as ScriptProcessorNode) = this.context.createScriptProcessor(this.buffer, 1, 1);
     this.analyser = this.context.createAnalyser();
     (this.analyser as AnalyserNode).fftSize = this.buffer;
@@ -202,17 +202,17 @@ class Camera {
     this.selector.css({
       '-webkit-transform': 'translate(0px, 0px) scale(1)',
       '-ms-transform': 'translate(0px, 0px) scale(1)',
-      'transform': 'translate(0px, 0px) scale(1)'
+      transform: 'translate(0px, 0px) scale(1)',
     });
     setTimeout(() => {
       this.selector.css({
-        'z-index': '1'
-      })
-    }, 200)
+        'z-index': '1',
+      });
+    }, 200);
   }
 
   handlers() {
-    $(document).keydown(e => {
+    $(document).keydown((e) => {
       if (e.key === 'Escape') {
         this.close();
       }

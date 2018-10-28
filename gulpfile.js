@@ -82,21 +82,19 @@ gulp.task('docs:styles', () => {
     .pipe(gulp.dest('docs/styles/'));
 });
 gulp.task('docs:scripts', () => {
-  // gulp.src('src/scripts/vendor/*.js')
-  //   .pipe(uglify())
-  //   .pipe(gulp.dest('docs/scripts/vendor/'));
-  //
-  // gulp.src('src/scripts/*.js')
-  // .pipe(sourcemaps.init())
-  // .pipe(plumber(handleError))
-  //   .pipe(babel({
-  //     presets: ['env']
-  //   }))
-  //   .pipe(uglify())
-  // .pipe(sourcemaps.write('.'))
-  // .pipe(gulp.dest('docs/scripts/'));
-  //
+  gulp.src('src/scripts/vendor/*.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('docs/scripts/vendor/'));
 
+  gulp.src('src/scripts/*.js')
+  .pipe(sourcemaps.init())
+  .pipe(plumber(handleError))
+    .pipe(babel({
+      presets: ['env']
+    }))
+    .pipe(uglify())
+  .pipe(sourcemaps.write('.'))
+  .pipe(gulp.dest('docs/scripts/'));
 
   gulp.src('src/scripts/*.ts')
   .pipe(tsProject())
@@ -159,3 +157,4 @@ gulp.task('cleardocs', () => {
 
 gulp.task('default', ['watch:docs', 'watch:update']);
 gulp.task('docs', ['docs:html', 'docs:styles', 'docs:scripts', 'docs:assets']);
+gulp.task('scripts', ['docs:scripts']);
