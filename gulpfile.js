@@ -20,6 +20,7 @@ const sourcemaps   = require('gulp-sourcemaps');
 //
 const babel        = require('gulp-babel');
 const uglify       = require('gulp-uglify');
+const ts           = require('gulp-typescript');
 //
 const imagemin     = require('gulp-imagemin');
 
@@ -27,7 +28,7 @@ const imagemin     = require('gulp-imagemin');
 const handleError = err => {
   notify.onError({title: 'Gulp error', message: err.message})(err);
 };
-
+const tsProject = ts.createProject('tsconfig.json');
 // Обработка аргументов
 const knownOptions = {
   string:  'env',
@@ -81,19 +82,26 @@ gulp.task('docs:styles', () => {
     .pipe(gulp.dest('docs/styles/'));
 });
 gulp.task('docs:scripts', () => {
-  gulp.src('src/scripts/vendor/*.js')
-    .pipe(uglify())
-    .pipe(gulp.dest('docs/scripts/vendor/'));
+  // gulp.src('src/scripts/vendor/*.js')
+  //   .pipe(uglify())
+  //   .pipe(gulp.dest('docs/scripts/vendor/'));
+  //
+  // gulp.src('src/scripts/*.js')
+  // .pipe(sourcemaps.init())
+  // .pipe(plumber(handleError))
+  //   .pipe(babel({
+  //     presets: ['env']
+  //   }))
+  //   .pipe(uglify())
+  // .pipe(sourcemaps.write('.'))
+  // .pipe(gulp.dest('docs/scripts/'));
+  //
 
-  gulp.src('src/scripts/*.js')
-  .pipe(sourcemaps.init())
-  .pipe(plumber(handleError))
-    .pipe(babel({
-      presets: ['env']
-    }))
-    .pipe(uglify())
-  .pipe(sourcemaps.write('.'))
+
+  gulp.src('src/scripts/*.ts')
+  .pipe(tsProject())
   .pipe(gulp.dest('docs/scripts/'));
+
 });
 gulp.task('docs:assets', () => {
   gulp.src('src/assets/fonts/**/*.*')
