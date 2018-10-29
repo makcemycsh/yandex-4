@@ -109,7 +109,7 @@ class Camera {
     this.initChart();
     this.timer = setInterval(() => {
       this.chart.update();
-    }, 100);
+    },                       100);
 
   }
 
@@ -153,7 +153,7 @@ class Camera {
   }
 
   initChart() {
-    this.chart = new Chart($('#audio'), {
+    this.chart = new Chart(($ as any)('#audio'), {
       type: 'bar',
       data: {
         labels: (this.bands as Uint8Array),
@@ -208,7 +208,7 @@ class Camera {
       this.selector.css({
         'z-index': '1',
       });
-    }, 200);
+    },         200);
   }
 
   handlers() {

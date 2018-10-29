@@ -10,14 +10,23 @@
    
 - Запуск видео-сервера — video-server 
    - ``cd video-server`` 
+   - ``npm i`` ≈
+   - ``npm start``
+   -  http://localhost:9000/camera.html 
+
+
+- Запуск node
+   - ``cd server`` 
    - ``npm i`` 
    - ``npm start``
-
+   - http://localhost:8000/status
+   - http://localhost:8000/api/events?type=critical
 
 Переписаны на TypeScript:
 * ДЗ «Адаптивная вёрстка» — main.ts
 * ДЗ «Работа с сенсорным пользовательским вводом» — pointerevents.ts
 * ДЗ «Мультимедиа» — camera.ts
+* ДЗ «Node.js» — server/app.ts
 
  При сборки исользовался gulp-typescript и tslinter
  
