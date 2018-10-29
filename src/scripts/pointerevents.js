@@ -1,7 +1,3 @@
-function is_touch_device() {
-  return !!('ontouchstart' in window);
-}
-
 // Проверяем тип устройства
 if (is_touch_device()) $(document.body).addClass('is-touch');
 else $(document.body).addClass('no-touch');
@@ -116,11 +112,18 @@ class Handler {
   moveScroll() {
     let start = 15;
     let end = 85;
-    let persent = (this.left + this.leftLim) * 100 / (this.leftLim * 2);
+    let persent = (-this.left + this.leftLim) * 100 / (this.leftLim * 2);
     persent = persent * 0.7 + start;
     persent > end ? persent = end : '';
     persent < start ? persent = start : '';
     this.$scroll.css('left', persent + '%');
+  }
+
+  moveImg() {
+    this.getLim();
+    this.checkLim();
+    this.$img.css('transform', 'translate(' + this.left + 'px, ' + this.top + 'px)');
+    this.moveScroll();
   }
 
   pointerDown(e) {
@@ -145,12 +148,6 @@ class Handler {
     }
   }
 
-  moveImg() {
-    this.getLim();
-    this.checkLim();
-    this.$img.css('transform', 'translate(' + this.left + 'px, ' + this.top + 'px)');
-    this.moveScroll();
-  }
 
   pointerMove(e) {
     if (this.events.length === 1 && !this.fixed) {

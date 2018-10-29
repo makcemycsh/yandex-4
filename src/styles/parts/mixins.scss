@@ -77,7 +77,7 @@
 @mixin range() {
   input[type=range] {
     -webkit-appearance: none;
-    margin:             $thumb-height/2 0;
+    padding:             $thumb-height/2 0;
     width:              $track-width;
 
     &:focus {
