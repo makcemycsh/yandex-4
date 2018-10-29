@@ -4,12 +4,12 @@
 
 Для запуска:
 * npm i
-* node app.js       
+* node app.ts       
 
 Сделано:
 
 * Сервер подниматься на 8000
-* Обрабатывать два роута: 1. /status 2. /api/events
+* Обрабатывать два роута: 1. /server 2. /api/events
 * /status выводит время, прошедшее с запуска сервера
 * /api/events отдает содержимое events.json 
 * Реализована сортировка по типам через get параметры ( http://localhost:8000/api/events?type=critical )
