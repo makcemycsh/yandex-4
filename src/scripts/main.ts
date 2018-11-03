@@ -11,10 +11,10 @@ interface DataEvent {
   description: string | null;
   icon: string;
   size: string;
-  data: DataEventDate;
+  data: DataEventData;
 }
 
-interface DataEventDate {
+interface DataEventData {
   temperature: number | string;
   humidity: number | string;
   volume: number | string;
@@ -92,7 +92,7 @@ function dataMain(data: DataEvent) {
       </div>`;
 }
 
-function dataTemplate(data: DataEventDate) {
+function dataTemplate(data: DataEventData) {
   return `${data.albumcover ? dataMusic(data) : ''}
   ${data.temperature ? dataWeather(data) : ''}
   ${data.buttons ? dataButtons(data) : ''}
@@ -127,7 +127,7 @@ function dataImage() {
            </div>`;
 }
 
-function dataButtons(data: DataEventDate) {
+function dataButtons(data: DataEventData) {
   return `<div class="b-card__data">
             <div class="b-card__btns">
                 ${data.buttons.map(btn => ` <button class="b-btn ${btn === 'Да'
@@ -137,7 +137,7 @@ function dataButtons(data: DataEventDate) {
           </div>`;
 }
 
-function dataWeather(data: DataEventDate) {
+function dataWeather(data: DataEventData) {
   return `<div class="b-card__data">
             <div class="b-data-set">
               <div class="b-data-set__item">
@@ -154,7 +154,7 @@ function dataWeather(data: DataEventDate) {
           </div>`;
 }
 
-function dataMusic(data: DataEventDate) {
+function dataMusic(data: DataEventData) {
   return `<div class="b-card__data">
            <div class="b-music">
             <div class="b-music__section">

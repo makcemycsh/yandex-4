@@ -3,7 +3,6 @@ function init() {
     || (window as any).webkitAudioContext)();
   $('.js-camera').each(function () {
     new Camera($(this), context);
-    console.log($(this));
   });
 }
 

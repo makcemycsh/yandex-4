@@ -10,7 +10,7 @@
    
 - Запуск видео-сервера — video-server 
    - ``cd video-server`` 
-   - ``npm i`` ≈
+   - ``npm i``
    - ``npm start``
    -  http://localhost:9000/camera.html 
 
