@@ -1,2 +1,185 @@
-"use strict";var _createClass=function(){function n(t,e){for(var s=0;s<e.length;s++){var n=e[s];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(t,e,s){return e&&n(t.prototype,e),s&&n(t,s),t}}();function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function init(){var t=new(window.AudioContext||window.webkitAudioContext);$(".js-camera").each(function(){new Camera($(this),t)})}var $controls={close:$(".js-close"),brightness:$(".js-camera-brightness"),contrast:$(".js-camera-contrast"),volume:$(".js-camera-volume")},Camera=function(){function s(t,e){_classCallCheck(this,s),this.selector=$(t),this.video=$(t).find("video"),this.active=!1,this.brightness=100,this.contrast=100,this.volume=1,this.buffer=256,this.timer=null,this.chart=null,this.context=e,this.handlers(),this.initAudioContext(),this.initChart()}return _createClass(s,[{key:"changeContrast",value:function(){this.active&&(this.contrast=$($controls.contrast).val(),this.filter())}},{key:"changeBrightness",value:function(){this.active&&(this.brightness=$($controls.brightness).val(),this.filter())}},{key:"changeVolume",value:function(){this.active&&(this.volume=$($controls.volume).val(),this.video[0].volume=this.volume)}},{key:"filter",value:function(){this.selector.css("filter","contrast("+this.contrast+"%) brightness("+this.brightness+"%)")}},{key:"close",value:function(){clearInterval(this.timer),$("body").removeClass("mod-video"),this.active=!1,this.video[0].muted=!0,this.resetStyles()}},{key:"open",value:function(){var t=this;this.active||(this.active=!0,$("body").addClass("mod-video"),this.resetRange(),this.openAnimation(),this.video[0].muted=!1,this.initAudioContext(),this.initChart(),this.timer=setInterval(function(){t.chart.update()},100))}},{key:"openAnimation",value:function(){var t=this.selector[0].getBoundingClientRect(),e=t.height,s=t.width,n=document.documentElement.clientWidth,i=document.documentElement.clientHeight,o=t.left-(n-s)/2,a=t.top-(i-e)/2,r=n/s;this.selector.css({"-webkit-transform":"translate("+-o+"px, "+-a+"px) scale("+r+")","-ms-transform":"translate("+-o+"px, "+-a+"px) scale("+r+")",transform:"translate("+-o+"px, "+-a+"px) scale("+r+")","z-index":"999"})}},{key:"initAudioContext",value:function(){var t=this;this.node=this.context.createScriptProcessor(this.buffer,1,1),this.analyser=this.context.createAnalyser(),this.analyser.fftSize=this.buffer,this.bands=new Uint8Array(this.analyser.frequencyBinCount),this.source||(this.source=this.context.createMediaElementSource(this.video[0])),this.source.connect(this.analyser),this.analyser.connect(this.node),this.node.connect(this.context.destination),this.source.connect(this.context.destination),this.node.onaudioprocess=function(){if(t.analyser.getByteFrequencyData(t.bands),!t.video.paused)return"function"==typeof t.update?t.update(t.bands):0}}},{key:"initChart",value:function(){this.chart=new Chart($("#audio"),{type:"bar",data:{labels:this.bands,datasets:[{data:this.bands,borderWidth:1,barStrokeWidth:2,backgroundColor:"yellow"}]},options:{legend:{display:!1},scales:{xAxes:[{ticks:{display:!1},gridLines:{display:!1}}],yAxes:[{ticks:{display:!1,max:200,min:0},gridLines:{display:!1}}]}}})}},{key:"resetRange",value:function(){$($controls.contrast).val(this.contrast),$($controls.brightness).val(this.brightness),$($controls.volume).val(this.volume)}},{key:"resetStyles",value:function(){var t=this;this.selector.css({"-webkit-transform":"translate(0px, 0px) scale(1)","-ms-transform":"translate(0px, 0px) scale(1)",transform:"translate(0px, 0px) scale(1)"}),setTimeout(function(){t.selector.css({"z-index":"1"})},200)}},{key:"handlers",value:function(){var e=this;$(document).keydown(function(t){"Escape"===t.key&&e.close()}),this.selector.on("click",this.open.bind(this)),$($controls.close).on("click",this.close.bind(this)),$($controls.contrast).on("input",debounce(this.changeContrast.bind(this),5)),$($controls.brightness).on("input",debounce(this.changeBrightness.bind(this),5)),$($controls.volume).on("input",debounce(this.changeVolume.bind(this),5))}}]),s}();init();
-//# sourceMappingURL=camera.js.map
+"use strict";
+function init() {
+    const context = new (window.AudioContext
+        || window.webkitAudioContext)();
+    $('.js-camera').each(function () {
+        new Camera($(this), context);
+        console.log($(this));
+    });
+}
+const $controls = {
+    close: $('.js-close'),
+    brightness: $('.js-camera-brightness'),
+    contrast: $('.js-camera-contrast'),
+    volume: $('.js-camera-volume'),
+};
+class Camera {
+    constructor($selector, context) {
+        this.selector = $($selector);
+        this.video = this.selector.find('video')[0];
+        this.active = false;
+        this.brightness = 100;
+        this.contrast = 100;
+        this.volume = 1;
+        this.buffer = 256;
+        this.timer = 0;
+        this.chart = 0;
+        this.context = context;
+        this.node = null;
+        this.analyser = null;
+        this.bands = null;
+        this.source = null;
+        this.update = '';
+        this.handlers();
+        this.initAudioContext();
+        this.initChart();
+    }
+    changeContrast() {
+        if (this.active) {
+            this.contrast = Number($($controls.contrast).val());
+            this.filter();
+        }
+    }
+    changeBrightness() {
+        if (this.active) {
+            this.brightness = Number($($controls.brightness).val());
+            this.filter();
+        }
+    }
+    changeVolume() {
+        if (this.active) {
+            this.volume = Number($($controls.volume).val());
+            this.video.volume = this.volume;
+        }
+    }
+    filter() {
+        this.selector.css('filter', `contrast(${this.contrast}%) brightness(${this.brightness}%)`);
+    }
+    close() {
+        clearInterval(this.timer);
+        $('body').removeClass('mod-video');
+        this.active = false;
+        this.video.muted = true;
+        this.resetStyles();
+    }
+    open() {
+        if (this.active) {
+            return;
+        }
+        this.active = true;
+        $('body').addClass('mod-video');
+        this.resetRange();
+        this.openAnimation();
+        this.video.muted = false;
+        this.initAudioContext();
+        this.initChart();
+        this.timer = setInterval(() => {
+            this.chart.update();
+        }, 100);
+    }
+    openAnimation() {
+        const positionInfo = this.selector[0].getBoundingClientRect();
+        const heightEl = positionInfo.height;
+        const widthEl = positionInfo.width;
+        const widthWindow = document.documentElement.clientWidth;
+        const higthWindow = document.documentElement.clientHeight;
+        const moveLeft = positionInfo.left - ((widthWindow - widthEl) / 2);
+        const moveTop = positionInfo.top - ((higthWindow - heightEl) / 2);
+        const scale = widthWindow / widthEl;
+        this.selector.css({
+            '-webkit-transform': 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
+            '-ms-transform': 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
+            transform: 'translate(' + -moveLeft + 'px, ' + -moveTop + 'px) scale(' + scale + ')',
+            'z-index': '999',
+        });
+    }
+    initAudioContext() {
+        this.node = this.context.createScriptProcessor(this.buffer, 1, 1);
+        this.analyser = this.context.createAnalyser();
+        this.analyser.fftSize = this.buffer;
+        this.bands = new Uint8Array(this.analyser.frequencyBinCount);
+        if (!this.source)
+            this.source = this.context.createMediaElementSource(this.video);
+        this.source.connect(this.analyser);
+        this.analyser.connect(this.node);
+        this.node.connect(this.context.destination);
+        this.source.connect(this.context.destination);
+        this.node.onaudioprocess = () => {
+            this.analyser.getByteFrequencyData(this.bands);
+            if (!this.video.paused) {
+                if (typeof this.update === 'function')
+                    return this.update(this.bands);
+                return 0;
+            }
+        };
+    }
+    initChart() {
+        this.chart = new Chart($('#audio'), {
+            type: 'bar',
+            data: {
+                labels: this.bands,
+                datasets: [{
+                        data: this.bands,
+                        borderWidth: 1,
+                        barStrokeWidth: 2,
+                        backgroundColor: 'yellow',
+                    }],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                scales: {
+                    xAxes: [{
+                            ticks: {
+                                display: false,
+                            },
+                            gridLines: {
+                                display: false,
+                            },
+                        }],
+                    yAxes: [{
+                            ticks: {
+                                display: false,
+                                max: 200,
+                                min: 0,
+                            },
+                            gridLines: {
+                                display: false,
+                            },
+                        }],
+                },
+            },
+        });
+    }
+    resetRange() {
+        $($controls.contrast).val(this.contrast);
+        $($controls.brightness).val(this.brightness);
+        $($controls.volume).val(this.volume);
+    }
+    resetStyles() {
+        this.selector.css({
+            '-webkit-transform': 'translate(0px, 0px) scale(1)',
+            '-ms-transform': 'translate(0px, 0px) scale(1)',
+            transform: 'translate(0px, 0px) scale(1)',
+        });
+        setTimeout(() => {
+            this.selector.css({
+                'z-index': '1',
+            });
+        }, 200);
+    }
+    handlers() {
+        $(document).keydown((e) => {
+            if (e.key === 'Escape') {
+                this.close();
+            }
+        });
+        this.selector.on('click', this.open.bind(this));
+        $($controls.close).on('click', this.close.bind(this));
+        $($controls.contrast).on('input', debounce(this.changeContrast.bind(this), 5, false));
+        $($controls.brightness).on('input', debounce(this.changeBrightness.bind(this), 5, false));
+        $($controls.volume).on('input', debounce(this.changeVolume.bind(this), 5, false));
+    }
+}
+init();

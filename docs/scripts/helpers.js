@@ -1,2 +1,20 @@
-"use strict";function is_touch_device(){return!!("ontouchstart"in window)}function debounce(u,o,e){var c=void 0;return function(){var t=this,n=arguments,i=e&&!c;clearTimeout(c),c=setTimeout(function(){c=null,e||u.apply(t,n)},o),i&&u.apply(t,n)}}
-//# sourceMappingURL=helpers.js.map
+"use strict";
+function is_touch_device() {
+    return !!('ontouchstart' in window);
+}
+function debounce(func, wait, immediate) {
+    let timeout;
+    return function () {
+        const args = arguments;
+        const later = function () {
+            timeout = 0;
+            if (!immediate)
+                func.apply(args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow)
+            func.apply(args);
+    };
+}

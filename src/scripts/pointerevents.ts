@@ -2,8 +2,44 @@
 if (is_touch_device()) $(document.body).addClass('is-touch');
 else $(document.body).addClass('no-touch');
 
+interface CardEvent {
+  id: number;
+  clientX: number;
+  clientY: number;
+}
+
 class Handler {
-  constructor(selector) {
+  selector: JQuery<HTMLElement>;
+  $imgWrap: JQuery<HTMLElement>;
+  $img: JQuery<HTMLElement>;
+  $scroll: JQuery<HTMLElement>;
+  $zoom: JQuery<HTMLElement>;
+  $brightness: JQuery<HTMLInputElement>;
+  height: number;
+  newHeight: number;
+  minHeight: number;
+  maxHeight: number;
+  left: number;
+  top: number;
+  oldLeft: number;
+  oldTop: number;
+  leftLim: number;
+  topLim: number;
+  brightness: number;
+  events: Array<CardEvent>;
+  distance: number;
+  oldDistance: number;
+  newDistance: number;
+
+  rotate: number;
+  oldRotate: number;
+  newRotate: number;
+
+  zoom: boolean;
+  fixed: boolean;
+  lastTap: number | null;
+
+  constructor(selector: JQuery<HTMLElement>) {
     this.selector = $(selector);
     this.$imgWrap = $('.js-img-wrapper', this.selector);
     this.$img = $('img', this.$imgWrap);
@@ -11,8 +47,8 @@ class Handler {
     this.$zoom = $('.js-zoom', this.selector);
     this.$brightness = $('.js-brightness', this.selector);
 
-    this.height = undefined;
-    this.newHeight = undefined;
+    this.height = 0;
+    this.newHeight = 0;
     this.minHeight = 300;
     this.maxHeight = 1000;
 
@@ -27,16 +63,17 @@ class Handler {
     this.events = [];
 
     this.distance = 0;
-    this.oldDistance = undefined;
-    this.newDistamce = 0;
+    this.oldDistance = 0;
+    this.newDistance = 0;
 
     this.rotate = 0;
-    this.oldRotate = undefined;
+    this.oldRotate = 0;
     this.newRotate = 0;
 
     this.zoom = false;
     this.fixed = false;
-    this.lastTap = undefined;
+    this.lastTap = 0;
+
     this.hendlPointerEvents(this.selector);
     this.handelRotate(0);
   }
@@ -51,7 +88,7 @@ class Handler {
   }
 
   handlePinch() {
-    if (!this.newHeight) this.newHeight = this.$img.height();
+    if (this.newHeight === 0) this.newHeight = Number(this.$img.height());
     this.distance = 10 * Math.sign(this.distance);
     this.newHeight += this.distance;
     if (this.newHeight >= this.maxHeight) this.newHeight = this.maxHeight;
@@ -61,11 +98,11 @@ class Handler {
     this.moveImg();
   }
 
-  handelRotate(change) {
+  handelRotate(change: number) {
     this.brightness += change;
     if (this.brightness >= 100) this.brightness = 100;
     if (this.brightness <= 0) this.brightness = 0;
-    this.$brightness.html(this.brightness);
+    this.$brightness.html(String(this.brightness));
     this.changeBrightness(this.$img, this.brightness);
   }
 
@@ -74,82 +111,81 @@ class Handler {
       this.$img.height(this.height);
       this.zoom = !this.zoom;
     } else {
-      this.height = this.$img.height();
+      this.height = Number(this.$img.height());
       this.maxHeight = 2 * this.height;
       this.$img.height(this.maxHeight);
       this.zoom = !this.zoom;
     }
     this.moveImg();
-    this.changeZoom(this.$img, this.brightness);
+    this.changeZoom();
   }
 
   // Меняем яркость от 50 до 150
-  changeBrightness(selector, val) {
+  changeBrightness(selector: JQuery<HTMLElement>, val: number) {
     selector.css({
-      "-webkit-filter": "brightness(" + (val + 50) + "%)",
-      "filter": "brightness(" + (val + 50) + "%)"
-    })
+      '-webkit-filter': `brightness(${val + 50}%)`,
+      filter: `brightness(${val + 50}%)`,
+    });
   }
 
   changeZoom() {
-    let zoom = (this.$img.height() * 0.1).toFixed(0);
-    $(this.$zoom).html(zoom);
+    const zoom: number | string = (Number(this.$img.height()) * 0.1).toFixed(0);
+    $(this.$zoom).html(String(zoom));
   }
 
   getLim() {
-    this.topLim = (this.$imgWrap.height() - this.$imgWrap.parent().height()) / 2;
-    this.leftLim = (this.$imgWrap.width() - this.$imgWrap.parent().width()) / 2;
+    this.topLim = (Number(this.$imgWrap.height()) - Number(this.$imgWrap.parent().height())) / 2;
+    this.leftLim = (Number(this.$imgWrap.width()) - Number(this.$imgWrap.parent().width())) / 2;
   }
 
-  getDistance(x1, y1, x2, y2) {
+  getDistance(x1: number, y1: number, x2: number, y2: number) {
     return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
   }
 
-  getAngle(x1, y1, x2, y2) {
+  getAngle(x1: number, y1: number, x2: number, y2: number) {
     return Math.atan2(y1 - y2, x1 - x2) * 180 / Math.PI;
   }
 
   moveScroll() {
-    let start = 15;
-    let end = 85;
+    const start = 15;
+    const end = 85;
     let persent = (-this.left + this.leftLim) * 100 / (this.leftLim * 2);
     persent = persent * 0.7 + start;
     persent > end ? persent = end : '';
     persent < start ? persent = start : '';
-    this.$scroll.css('left', persent + '%');
+    this.$scroll.css('left', `${persent}%`);
   }
 
   moveImg() {
     this.getLim();
     this.checkLim();
-    this.$img.css('transform', 'translate(' + this.left + 'px, ' + this.top + 'px)');
+    this.$img.css('transform', `translate(${this.left}px, ${this.top}px)`);
     this.moveScroll();
   }
 
-  pointerDown(e) {
+  pointerDown(e: PointerEvent) {
     this.events.push({
-      id: e.originalEvent.pointerId,
+      id: e.pointerId,
       clientX: e.clientX,
-      clientY: e.clientY
+      clientY: e.clientY,
     });
-    let now = new Date().getTime();
+    const now: number = new Date().getTime();
     this.oldLeft = e.clientX;
     this.oldTop = e.clientY;
-    this.oldDistance = undefined;
-    this.oldRotate = undefined;
+    this.oldDistance = 0;
+    this.oldRotate = 0;
 
     this.getLim();
 
     if (this.events.length === 2) this.fixed = true;
     if (this.events.length === 1) {
-      let timesince = now - this.lastTap;
+      const timesince: number | null = now - Number(this.lastTap);
       if ((timesince < 300) && (timesince > 0)) this.zoomImg();     // Двойной тап
       this.lastTap = new Date().getTime();
     }
   }
 
-
-  pointerMove(e) {
+  pointerMove(e: PointerEvent) {
     if (this.events.length === 1 && !this.fixed) {
 
       this.left += e.clientX - this.oldLeft;
@@ -159,31 +195,29 @@ class Handler {
       this.oldTop = e.clientY;
 
     } else if (this.events.length === 2) {
-      let curId = e.originalEvent.pointerId;
-      let curObj = this.events.filter(item => item.id === curId)[0];
+      const curId = e.pointerId;
+      const curObj = this.events.filter(item => item.id === curId)[0];
       curObj.clientX = e.clientX;
       curObj.clientY = e.clientY;
 
-      let x1 = this.events[0].clientX;
-      let y1 = this.events[0].clientY;
-      let x2 = this.events[1].clientX;
-      let y2 = this.events[1].clientY;
+      const x1 = this.events[0].clientX;
+      const y1 = this.events[0].clientY;
+      const x2 = this.events[1].clientX;
+      const y2 = this.events[1].clientY;
 
-      this.newDistamce = this.getDistance(x1, y1, x2, y2);
+      this.newDistance = this.getDistance(x1, y1, x2, y2);
       this.newRotate = this.getAngle(x1, y1, x2, y2);
 
-
       if (!this.oldRotate) this.oldRotate = this.newRotate;
-      if (!this.oldDistance) this.oldDistance = this.newDistamce;
+      if (!this.oldDistance) this.oldDistance = this.newDistance;
 
       this.rotate = this.newRotate - this.oldRotate;
       this.oldRotate = this.newRotate;
 
+      this.distance = this.newDistance - this.oldDistance;
+      this.oldDistance = this.newDistance;
 
-      this.distance = this.newDistamce - this.oldDistamce;
-      this.oldDistamce = this.newDistamce;
-
-      //Отделяем поворот от зума
+      // Отделяем поворот от зума
       Math.abs(this.distance) > 5 && this.handlePinch();
       Math.abs(this.rotate) > 2 && this.handelRotate(Math.sign(this.rotate));
 
@@ -191,18 +225,18 @@ class Handler {
     this.changeZoom();
   }
 
-  pointerUp(e) {
-    this.events = this.events.filter((item) => item.id !== e.originalEvent.pointerId);
+  pointerUp(e: PointerEvent) {
+    this.events = this.events.filter(item => item.id !== e.pointerId);
     if (this.events.length === 0) this.fixed = false;
 
   }
 
   // Обработчики событий
-  hendlPointerEvents(selector) {
+  hendlPointerEvents(selector: JQuery<HTMLElement>) {
     if (is_touch_device()) {
-      selector.on('pointermove', e => this.pointerMove(e));
-      selector.on('pointerdown', e => this.pointerDown(e));
-      selector.on('pointerup pointercancel pointerleave pointerout', e => this.pointerUp(e));
+      selector.on('pointermove', (e: any) => this.pointerMove(e));
+      selector.on('pointerdown', (e: any) => this.pointerDown(e));
+      selector.on('pointerup pointercancel pointerleave pointerout', (e: any) => this.pointerUp(e));
 
     }
   }

@@ -1,0 +1,12 @@
+{
+    "defaultSeverity": "error",
+    "extends": "tslint-config-airbnb",
+    "jsRules": {},
+    "rules": {
+        "eofline": false
+    },
+    "rulesDirectory": [],
+    "parserOptions": {
+        "ecmaVersion": 6
+    }
+}
