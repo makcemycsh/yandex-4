@@ -1,3 +1,5 @@
+import DateTimeFormat = Intl.DateTimeFormat;
+
 function init() {
   const context: AudioContext = new ((window as any).AudioContext
     || (window as any).webkitAudioContext)();
@@ -28,7 +30,7 @@ class Camera {
   contrast: number;
   volume: number;
   buffer: number;
-  timer: number;
+  timer: number | DateTimeFormat;
   chart: any;
   context: any;
 
@@ -87,7 +89,7 @@ class Camera {
   }
 
   close() {
-    clearInterval(this.timer);
+    clearInterval(<number>this.timer);
     $('body').removeClass('mod-video');
     this.active = false;
     this.video.muted = true;
@@ -106,9 +108,9 @@ class Camera {
 
     this.initAudioContext();
     this.initChart();
-    this.timer = setInterval(() => {
+    this.timer = Number(setInterval(() => {
       this.chart.update();
-    },                       100);
+    },100));
 
   }
 

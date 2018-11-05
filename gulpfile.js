@@ -96,9 +96,19 @@ gulp.task('docs:scripts', () => {
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('docs/scripts/'));
 
-  gulp.src('src/scripts/*.ts')
-  .pipe(tsProject())
-  .pipe(gulp.dest('docs/scripts/'));
+  gulp.src('src/scripts/lib/*.js')
+  .pipe(sourcemaps.init())
+  .pipe(plumber(handleError))
+  .pipe(babel({
+    presets: ['env']
+  }))
+  .pipe(uglify())
+  .pipe(sourcemaps.write('.'))
+  .pipe(gulp.dest('docs/scripts/lib/'));
+  //
+  // gulp.src('src/scripts/*.ts')
+  // .pipe(tsProject())
+  // .pipe(gulp.dest('docs/scripts/'));
 
 });
 gulp.task('docs:assets', () => {

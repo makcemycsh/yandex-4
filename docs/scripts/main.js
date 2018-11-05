@@ -23,14 +23,14 @@ function handleDataEvents() {
 }
 $.getJSON('assets/json/events.json').done((data) => {
     $.each(data.events, (i, item) => {
-        template(item);
+        template(item, i);
     });
     $('.js-pointer-event').each((i, e) => {
         new Handler($(e));
     });
 });
-function template(event) {
-    const card = `<div class="b-card mod-${event.size}   ${event.type === 'critical'
+function template(event, id) {
+    const card = `<div data-id="${id}" class="b-card js-card mod-${event.size}   ${event.type === 'critical'
         ? 'mod-attention'
         : ''} ">
       <div class="b-card__head">
@@ -44,7 +44,7 @@ function template(event) {
         </div>
       </div>
       ${event.description || event.data ? dataMain(event) : ''}
-      <button class="b-card__close"><i class="b-card__ico icon i-close"></i>
+      <button class="b-card__close js-item-close"><i class="b-card__ico icon i-close"></i>
       </button>
       <a href="#" class="b-card__link">
         <i class="b-card__ico icon i-arrow-r"></i>

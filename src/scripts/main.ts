@@ -1,5 +1,6 @@
 // import { RegExpVisitor } from 'regexpp/visitor';
 // import Handlers = module;
+
 const $document: JQuery<Document> = $(document);
 const $window: JQuery<Window> = $(window);
 
@@ -54,15 +55,15 @@ function handleDataEvents() {
 
 $.getJSON('assets/json/events.json').done((data) => {
   $.each(data.events, (i, item: DataEvent) => {
-    template(item);
+    template(item, i);
   });
   $('.js-pointer-event').each((i, e) => {
     new Handler($(e));
   });
 });
 
-function template(event: DataEvent) {
-  const card: string = `<div class="b-card mod-${event.size}   ${event.type === 'critical'
+function template(event: DataEven, id: numbert) {
+  const card: string = `<div data-id="${id}" class="b-card js-card mod-${event.size}   ${event.type === 'critical'
     ? 'mod-attention'
     : ''} ">
       <div class="b-card__head">
@@ -76,7 +77,7 @@ function template(event: DataEvent) {
         </div>
       </div>
       ${event.description || event.data ? dataMain(event) : ''}
-      <button class="b-card__close"><i class="b-card__ico icon i-close"></i>
+      <button class="b-card__close js-item-close"><i class="b-card__ico icon i-close"></i>
       </button>
       <a href="#" class="b-card__link">
         <i class="b-card__ico icon i-arrow-r"></i>

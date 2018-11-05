@@ -1,10 +1,10 @@
 "use strict";
+var DateTimeFormat = Intl.DateTimeFormat;
 function init() {
     const context = new (window.AudioContext
         || window.webkitAudioContext)();
     $('.js-camera').each(function () {
         new Camera($(this), context);
-        console.log($(this));
     });
 }
 const $controls = {
@@ -73,9 +73,9 @@ class Camera {
         this.video.muted = false;
         this.initAudioContext();
         this.initChart();
-        this.timer = setInterval(() => {
+        this.timer = Number(setInterval(() => {
             this.chart.update();
-        }, 100);
+        }, 100));
     }
     openAnimation() {
         const positionInfo = this.selector[0].getBoundingClientRect();
