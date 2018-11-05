@@ -1,2 +1,152 @@
-"use strict";function handleEvents(){$(".js-menu-bar").on("click",function(){$(this).toggleClass("is-active")})}function template(a){var n='<div class="b-card mod-'+a.size+"  "+("critical"===a.type?"mod-attention":"")+' ">\n      <div class="b-card__head">\n        <header>\n          <i class="b-card__ico icon i-'+a.icon+'"></i>\n          <h3 class="b-card__title">'+a.title+'</h3>\n        </header>\n        <div class="b-card__info">\n          <span class="b-card__name">'+a.source+'</span>\n          <span class="b-card__time">'+a.time+"</span>\n        </div>\n      </div>\n      "+(a.description||a.data?dataMain(a):"")+'\n      <button class="b-card__close"><i class="b-card__ico icon i-close"></i>\n      </button>\n      <a href="#" class="b-card__link">\n        <i class="b-card__ico icon i-arrow-r"></i>\n      </a>\n    </div>';insertHtml($("#js-card-list"),$(n))}function dataMain(a){return'<div class="b-card__main">\n      '+(a.description?"<p class='b-card__text'>"+a.description+"</p>":"")+"\n      "+(a.data?dataTemplate(a.data):"")+"\n      </div>"}function dataTemplate(a){return(a.albumcover?dataMusic(a):"")+"\n  "+(a.temperature?dataWeather(a):"")+"\n  "+(a.buttons?dataButtons(a):"")+"\n  "+(a.image?dataImage(a):"")+"\n  "+("graph"===a.type?dataGraph(a):"")}function dataGraph(a){return'<div class="b-card__data">\n           <picture>\n            <source srcset="assets/img/Richdata.svg" type="image/svg+xml">\n            <img src="assets/img/Richdata@2x.png" alt="yandex">\n          </picture>\n          </div>'}function dataImage(a){return'<div class="b-card__data js-pointer-event">\n          <div class="b-cam">\n            <div class="b-cam__img">\n            <div class="b-cam__wrapper js-img-wrapper">\n            <img src="assets/img/card-1.png" alt="yandex"\n               srcset="assets/img/card-1@x2.png 800w, assets/img/card-1@x3.png 1200w">\n               </div>\n                <div class="b-cam__scroll mod-only-touch js-scroll"></div>\n               </div>\n            <div class="b-cam__stat mod-only-touch">\n              <span>Приближение: <span class="js-zoom">45</span>%</span>\n              <span>Яркость: <span class="js-brightness">50</span>%</span>\n            </div>\n            </div>\n           </div>'}function dataButtons(a){return'<div class="b-card__data">\n            <div class="b-card__btns">\n                '+a.buttons.map(function(a){return' <button class="b-btn '+("Да"===a?"mod-yellow":"")+'">'+a+"</button>"}).join("")+"\n            </div>\n          </div>"}function dataWeather(a){return'<div class="b-card__data">\n            <div class="b-data-set">\n              <div class="b-data-set__item">\n                <p class="b-data-set__name">\n                  Температура: <span class="b-data-set__val">'+a.temperature+' C</span>\n                </p>\n              </div>\n              <div class="b-data-set__item">\n                <p class="b-data-set__name">\n                  Влажность: <span class="b-data-set__val">'+a.humidity+"%</span>\n                </p>\n              </div>\n            </div>\n          </div>"}function dataMusic(a){return'<div class="b-card__data"> \n           <div class="b-music">\n            <div class="b-music__section">\n              <div class="b-music__logo">\n                <img src="'+a.albumcover+'" alt="'+a.artist+'">\n              </div>\n              <div class="b-music__info">\n                <p class="b-music__name">\n                 '+a.artist+" - "+a.track.name+'\n                </p>\n                <div class="b-music__duration">\n                  <input id=\'range-1\' type="range" name="volume"\n                         min="0" max="100"/>\n                  <label for="range-1">'+a.track.length+'</label>\n                </div>\n              </div>\n            </div>\n            <div class="b-music__section">\n              <div class="b-music__controls">\n                <button class="b-music__prev icon i-prev"></button>\n                <button class="b-music__next icon i-next"></button>\n                <div class="b-music__val">\n                  <input id=\'range-2\' type="range" name="volume"\n                         min="0" max="100" value="'+a.volume+'"/>\n                  <label for="range-2">'+a.volume+"%</label>\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>"}function insertHtml(a,n){a.append(n)}$(document).ready(handleEvents),$.getJSON("assets/json/events.json").done(function(a){$.each(a.events,function(a,n){template(n)}),$(".js-pointer-event").each(function(a,n){new Handler(n)})});
-//# sourceMappingURL=main.js.map
+"use strict";
+// import { RegExpVisitor } from 'regexpp/visitor';
+// import Handlers = module;
+const $document = $(document);
+const $window = $(window);
+$document.ready(handleDataEvents);
+function handleDataEvents() {
+    // Фиксация хедера при скролле
+    $window.scroll(function () {
+        if ($(this).scrollTop() > 150) {
+            $('body').addClass('head-is-fixed');
+            $('.head-is-fixed').css('margin-top', 125);
+        }
+        else {
+            $('.head-is-fixed').css('margin-top', 0);
+            $('body').removeClass('head-is-fixed');
+        }
+    });
+    // Выпадающее меню
+    $('.js-menu-bar').on('click', function () {
+        $(this).toggleClass('is-active');
+    });
+}
+$.getJSON('assets/json/events.json').done((data) => {
+    $.each(data.events, (i, item) => {
+        template(item, i);
+    });
+    $('.js-pointer-event').each((i, e) => {
+        new Handler($(e));
+    });
+});
+function template(event, id) {
+    const card = `<div data-id="${id}" class="b-card js-card mod-${event.size}   ${event.type === 'critical'
+        ? 'mod-attention'
+        : ''} ">
+      <div class="b-card__head">
+        <header>
+          <i class="b-card__ico icon i-${event.icon}"></i>
+          <h3 class="b-card__title">${event.title}</h3>
+        </header>
+        <div class="b-card__info">
+          <span class="b-card__name">${event.source}</span>
+          <span class="b-card__time">${event.time}</span>
+        </div>
+      </div>
+      ${event.description || event.data ? dataMain(event) : ''}
+      <button class="b-card__close js-item-close"><i class="b-card__ico icon i-close"></i>
+      </button>
+      <a href="#" class="b-card__link">
+        <i class="b-card__ico icon i-arrow-r"></i>
+      </a>
+    </div>`;
+    insertHtml($('#js-card-list'), $(card));
+}
+function dataMain(data) {
+    return `<div class="b-card__main">
+      ${data.description ? `<p class='b-card__text'>${data.description}</p>` : ''}
+      ${data.data ? dataTemplate(data.data) : ''}
+      </div>`;
+}
+function dataTemplate(data) {
+    return `${data.albumcover ? dataMusic(data) : ''}
+  ${data.temperature ? dataWeather(data) : ''}
+  ${data.buttons ? dataButtons(data) : ''}
+  ${data.image ? dataImage() : ''}
+  ${data.type === 'graph' ? dataGraph() : ''}`;
+}
+function dataGraph() {
+    return `<div class="b-card__data">
+           <picture>
+            <source srcset="assets/img/Richdata.svg" type="image/svg+xml">
+            <img src="assets/img/Richdata@2x.png" alt="yandex">
+          </picture>
+          </div>`;
+}
+function dataImage() {
+    return `<div class="b-card__data js-pointer-event">
+          <div class="b-cam">
+            <div class="b-cam__img">
+            <div class="b-cam__wrapper js-img-wrapper">
+            <img src="assets/img/card-1.png" alt="yandex"
+               srcset="assets/img/card-1@x2.png 800w, assets/img/card-1@x3.png 1200w">
+               </div>
+                <div class="b-cam__scroll mod-only-touch js-scroll"></div>
+               </div>
+            <div class="b-cam__stat mod-only-touch">
+              <span>Приближение: <span class="js-zoom">45</span>%</span>
+              <span>Яркость: <span class="js-brightness">50</span>%</span>
+            </div>
+            </div>
+           </div>`;
+}
+function dataButtons(data) {
+    return `<div class="b-card__data">
+            <div class="b-card__btns">
+                ${data.buttons.map(btn => ` <button class="b-btn ${btn === 'Да'
+        ? 'mod-yellow'
+        : ''}">${btn}</button>`).join('')}
+            </div>
+          </div>`;
+}
+function dataWeather(data) {
+    return `<div class="b-card__data">
+            <div class="b-data-set">
+              <div class="b-data-set__item">
+                <p class="b-data-set__name">
+                  Температура: <span class="b-data-set__val">${data.temperature} C</span>
+                </p>
+              </div>
+              <div class="b-data-set__item">
+                <p class="b-data-set__name">
+                  Влажность: <span class="b-data-set__val">${data.humidity}%</span>
+                </p>
+              </div>
+            </div>
+          </div>`;
+}
+function dataMusic(data) {
+    return `<div class="b-card__data">
+           <div class="b-music">
+            <div class="b-music__section">
+              <div class="b-music__logo">
+                <img src="${data.albumcover}" alt="${data.artist}">
+              </div>
+              <div class="b-music__info">
+                <p class="b-music__name">
+                 ${data.artist} - ${data.track.name}
+                </p>
+                <div class="b-music__duration">
+                  <input id='range-1' type="range" name="volume"
+                         min="0" max="100"/>
+                  <label for="range-1">${data.track.length}</label>
+                </div>
+              </div>
+            </div>
+            <div class="b-music__section">
+              <div class="b-music__controls">
+                <button class="b-music__prev icon i-prev"></button>
+                <button class="b-music__next icon i-next"></button>
+                <div class="b-music__val">
+                  <input id='range-2' type="range" name="volume"
+                         min="0" max="100" value="${data.volume}"/>
+                  <label for="range-2">${data.volume}%</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+}
+function insertHtml($parent, $content) {
+    $parent.append($content);
+}

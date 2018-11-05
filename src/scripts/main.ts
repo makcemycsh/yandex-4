@@ -1,34 +1,71 @@
-$(document).ready(handleEvents);
+// import { RegExpVisitor } from 'regexpp/visitor';
+// import Handlers = module;
 
-function handleEvents() {
+const $document: JQuery<Document> = $(document);
+const $window: JQuery<Window> = $(window);
+
+interface DataEvent {
+  type: string;
+  title: string;
+  source: string;
+  time: string;
+  description: string | null;
+  icon: string;
+  size: string;
+  data: DataEventData;
+}
+
+interface DataEventData {
+  temperature: number | string;
+  humidity: number | string;
+  volume: number | string;
+  buttons: Array<string>;
+  albumcover: string;
+  artist: string;
+  track: Track;
+  type: string;
+  image: string;
+}
+
+interface Track {
+  name: string;
+  length: string;
+}
+
+$document.ready(handleDataEvents);
+
+function handleDataEvents() {
+
   // Фиксация хедера при скролле
-  // $(window).scroll(function () {
-  //   if ($(this).scrollTop() > 150) {
-  //     $('body').addClass('head-is-fixed');
-  //     $('.head-is-fixed').css('margin-top', $('.js-head').outerHeight(true));
-  //   } else {
-  //     $('.head-is-fixed').css('margin-top', 0);
-  //     $('body').removeClass('head-is-fixed');
-  //   }
-  // });
+  $window.scroll(function (): void {
+    if (($ as any)(this).scrollTop() > 150) {
+      $('body').addClass('head-is-fixed');
+      $('.head-is-fixed').css('margin-top', 125);
+    } else {
+      $('.head-is-fixed').css('margin-top', 0);
+      $('body').removeClass('head-is-fixed');
+    }
+  });
 
-  //Выпадающее меню
+  // Выпадающее меню
   $('.js-menu-bar').on('click', function () {
     $(this).toggleClass('is-active');
   });
 }
 
-$.getJSON("assets/json/events.json").done(function (data) {
-  $.each(data.events, function (i, item) {
-    template(item);
+$.getJSON('assets/json/events.json').done((data) => {
+  $.each(data.events, (i, item: DataEvent) => {
+    template(item, i);
   });
-  $('.js-pointer-event').each(function (i, e) {
-    new Handler(e);
-  })
+  $('.js-pointer-event').each((i, e) => {
+    new Handler($(e));
+  });
 });
 
-function template(event) {
-  let card = `<div class="b-card mod-${event.size}  ${event.type === 'critical' ? `mod-attention` : ''} ">
+function template(event: DataEven, id: numbert) {
+  const card: string = `<div data-id="${id}" class="b-card js-card mod-${event.size}   ${event.type === 'critical'
+    ? 'mod-attention'
+    : ''} ">
       <div class="b-card__head">
         <header>
           <i class="b-card__ico icon i-${event.icon}"></i>
@@ -40,7 +77,7 @@ function template(event) {
         </div>
       </div>
       ${event.description || event.data ? dataMain(event) : ''}
-      <button class="b-card__close"><i class="b-card__ico icon i-close"></i>
+      <button class="b-card__close js-item-close"><i class="b-card__ico icon i-close"></i>
       </button>
       <a href="#" class="b-card__link">
         <i class="b-card__ico icon i-arrow-r"></i>
@@ -49,31 +86,31 @@ function template(event) {
   insertHtml($('#js-card-list'), $(card));
 }
 
-function dataMain(data) {
+function dataMain(data: DataEvent) {
   return `<div class="b-card__main">
       ${data.description ? `<p class='b-card__text'>${data.description}</p>` : ''}
       ${data.data ? dataTemplate(data.data) : ''}
       </div>`;
 }
 
-function dataTemplate(data) {
+function dataTemplate(data: DataEventData) {
   return `${data.albumcover ? dataMusic(data) : ''}
   ${data.temperature ? dataWeather(data) : ''}
   ${data.buttons ? dataButtons(data) : ''}
-  ${data.image ? dataImage(data) : ''}
-  ${data.type === 'graph' ? dataGraph(data) : ''}`;
+  ${data.image ? dataImage() : ''}
+  ${data.type === 'graph' ? dataGraph() : ''}`;
 }
 
-function dataGraph(data) {
+function dataGraph() {
   return `<div class="b-card__data">
            <picture>
             <source srcset="assets/img/Richdata.svg" type="image/svg+xml">
             <img src="assets/img/Richdata@2x.png" alt="yandex">
           </picture>
-          </div>`
+          </div>`;
 }
 
-function dataImage(data) {
+function dataImage() {
   return `<div class="b-card__data js-pointer-event">
           <div class="b-cam">
             <div class="b-cam__img">
@@ -88,18 +125,20 @@ function dataImage(data) {
               <span>Яркость: <span class="js-brightness">50</span>%</span>
             </div>
             </div>
-           </div>`
+           </div>`;
 }
 
-function dataButtons(data) {
+function dataButtons(data: DataEventData) {
   return `<div class="b-card__data">
             <div class="b-card__btns">
-                ${data.buttons.map(btn => ` <button class="b-btn ${btn === 'Да' ? `mod-yellow` : '' }">${btn}</button>`).join('')}
+                ${data.buttons.map(btn => ` <button class="b-btn ${btn === 'Да'
+    ? 'mod-yellow'
+    : '' }">${btn}</button>`).join('')}
             </div>
           </div>`;
 }
 
-function dataWeather(data) {
+function dataWeather(data: DataEventData) {
   return `<div class="b-card__data">
             <div class="b-data-set">
               <div class="b-data-set__item">
@@ -116,8 +155,8 @@ function dataWeather(data) {
           </div>`;
 }
 
-function dataMusic(data) {
-  return `<div class="b-card__data"> 
+function dataMusic(data: DataEventData) {
+  return `<div class="b-card__data">
            <div class="b-music">
             <div class="b-music__section">
               <div class="b-music__logo">
@@ -149,6 +188,6 @@ function dataMusic(data) {
         </div>`;
 }
 
-function insertHtml($parent, $content) {
+function insertHtml($parent: JQuery<HTMLElement>, $content: JQuery<HTMLElement>) {
   $parent.append($content);
 }
