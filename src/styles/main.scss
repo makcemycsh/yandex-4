@@ -1,12 +1,8 @@
-@import 'vendor/**/*.scss';
+@import 'fonts';
+@import 'vars';
+@import 'mixins';
 //
-@import 'parts/fonts.scss';
-@import 'parts/vars.scss';
-@import 'parts/mixins.scss';
+@import 'icons';
+@import 'reset';
+@import 'services';
 //
-@import 'parts/blocks.scss';
-@import 'parts/icons.scss';
-@import 'parts/reset.scss';
-@import 'parts/services.scss';
-//
-@import '../blocks/**/*.scss';

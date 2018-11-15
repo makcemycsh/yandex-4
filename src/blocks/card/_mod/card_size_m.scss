@@ -1,0 +1,16 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.Card_Size_m {
+  grid-column: span 1;
+  grid-row:    span 1;
+  @include w-from($screen-md) {
+    grid-column: span 3;
+    grid-row:    span 1;
+    .Card-Text {
+      font-size:   20px;
+      line-height: 23px;
+      color:       black;
+    }
+  }
+}

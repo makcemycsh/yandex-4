@@ -1,138 +1,44 @@
-**ДЗ — «Архитектура»**
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Сборка проекта: 
-- Сборщик 
-   - ``npm i``
-   - `` gulp``
-   -  Сборка скриптов — ``gulp scripts``
-   
-- Запуск видео-сервера — video-server 
-   - ``cd video-server`` 
-   - ``npm i``
-   - ``npm start``
-   -  http://localhost:9000/camera.html 
-   
-   Реализация Flux архитектуры в файле ``src/scripts/lib/store.js``
-   
-   Store - класс, который содержит методы диспетчера:
-     - dispatch — регистрирует функции (записывает в массив callbacks) 
-     - subscribe - для подписи на изменение стора
-     
-     а также методы самого стора:
-     - getState для получения текущего состояния
-     
-     Проект изначально не писался как single page application, поэтому сложно было найти применение данной архитектуры в данном проекте. Работа фрейморка проверена на примере удаления карточек из списка евентов.
-     
-     Actions хранятся в ``src/scripts/myActions.js``
-     
-     Для карточек с событиями создается стор (``src/scripts/card.js``), в который передается initialState — массив из объектов (id карточки и сама картчока), а так же cardReducer — события связанные с этими карточками.     
-     
-     При удалении карточки, через store.subscribe выводится ее id. В local storage хранятся id всех активных карточек.
-     
-     Тесты не написаны.
-     
-До этого не было опыта работы с фрейморками на основе Flux архитектуры, поэтому что-то может быть сделан очень плохо (возможно все), но я не знаю что :C
- 
- --
- 
-**ДЗ — «Типизация»**
+## Available Scripts
 
-Файлы скриптов — src/scripts
+In the project directory, you can run:
 
-Сборка проекта: 
-- Сборщик 
-   - ``npm i``
-   - `` gulp``
-   -  Сборка скриптов — ``gulp scripts``
-   
-- Запуск видео-сервера — video-server 
-   - ``cd video-server`` 
-   - ``npm i``
-   - ``npm start``
-   -  http://localhost:9000/camera.html 
+### `npm start`
 
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-- Запуск node
-   - ``cd server`` 
-   - ``npm i`` 
-   - ``npm start``
-   - http://localhost:8000/status
-   - http://localhost:8000/api/events?type=critical
+The page will reload if you make edits.<br>
+You will also see any lint errors in the console.
 
-Переписаны на TypeScript:
-* ДЗ «Адаптивная вёрстка» — main.ts
-* ДЗ «Работа с сенсорным пользовательским вводом» — pointerevents.ts
-* ДЗ «Мультимедиа» — camera.ts
-* ДЗ «Node.js» — server/app.ts
+### `npm test`
 
- При сборки исользовался gulp-typescript и tslinter
- 
- Тип any был использован для:
-  * window, document;
-  * контекста конструктора;
-  * обработки событий поинтеревентов;
- 
- Не нашел к какому типу их нужно привести.
- 
- Пока чувствую себя не очень уверенно с tsc, продолжу работать с js
- 
----
-**ДЗ — «Мультимедиа»**
+Launches the test runner in the interactive watch mode.<br>
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Сборка проекта: 
-- Сборщик 
-   - ``npm i``
-   - `` gulp``
-   
-- Запуск видео-сервера — video-server 
-   - ``cd video-server`` 
-   - ``npm i`` 
-   - ``npm start``
-   
-   http://localhost:9000/camera.html 
-     
-- Страница с выводом потокового видео -   
-  - src/pages/camera.twig
-  - контент и стили - src/blocks/camera
-  
-- Скрипты - src/scripts/camera.js
-  - для каждого элемента с классом js-camera создается экземпляр класса Camera
-  - контроллеры вынесены в отдельный объект
-  
-Сделано:
-- На странице 4 карточки с видео
-- При клике на карточку видео разворачивается на весь экран
-- Анимация происходит с помощью изменение свойств transform rotate и scale ( will-change при ховере )
-- Чтобы свернуть видео можно нажать на ESC или на кнопку "Все камеры"
-- Фильтры реализованы через css свойство filter contrast / brightness 
-- Для управления фильтрами было добавлена 2 контроллера (input type="range")
-- Анализ звука происходит при помощи анализа частот window.AudioContext
-- Для построения графика была использована библиотека ChartJs (CDN)
-- Для часто срабатывающих событий был добавлен дебаунс 
+### `npm run build`
 
+Builds the app for production to the `build` folder.<br>
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
------
+The build is minified and the filenames include the hashes.<br>
+Your app is ready to be deployed!
 
-**ДЗ — «Node js»**
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-Сервер находистя в папке server
+### `npm run eject`
 
-Для запуска:
-* npm i
-* node app.ts       
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-Сделано:
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-* Сервер подниматься на 8000
-* Обрабатывать два роута: 1. /server 2. /api/events
-* /status выводит время, прошедшее с запуска сервера
-* /api/events отдает содержимое events.json 
-* Реализована сортировка по типам через get параметры ( http://localhost:8000/api/events?type=critical )
-* Все остальные роутеры отдают статус 404
+Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-Не сделано:
-* Post запросы
-* Пагинация
-* Подключение данных к верстке из первого задания
-=======
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).

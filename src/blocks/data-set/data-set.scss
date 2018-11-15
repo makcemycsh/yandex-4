@@ -1,0 +1,23 @@
+@import "../../styles/mixins";
+@import "../../styles/vars";
+@import "../../styles/services";
+
+.DataSet {
+  display:         flex;
+  justify-content: space-between;
+  flex-wrap:       wrap;
+  margin:          -8px;
+  &-Name {
+    white-space: nowrap;
+  }
+  @extend %span2;
+  &-Item {
+    margin: 8px;
+    @include w-from($screen-md) {
+      flex: 1 1 40%;
+    }
+  }
+  &-Val {
+    font-weight: bold;
+  }
+}

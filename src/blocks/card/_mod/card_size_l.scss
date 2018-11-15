@@ -1,0 +1,11 @@
+@import "../../../styles/vars";
+@import "../../../styles/mixins";
+
+.Card_Size_l {
+  grid-column: span 1;
+  grid-row:    span 1;
+  @include w-from($screen-md) {
+    grid-column: span 4;
+    grid-row:    span 3;
+  }
+}
