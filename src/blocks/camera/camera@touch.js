@@ -5,9 +5,9 @@ import Pointable          from 'react-pointable';
 
 import img1 from '../../assets/img/card-1.png';
 
-import './camera.scss';
+import './camera@touch.scss';
 
-export const cnCamera = cn('Camera');
+const cnCamera = cn('Camera');
 
 class Camera extends Component {
 
@@ -21,10 +21,10 @@ class Camera extends Component {
               <img className={cnCamera('ImgInner')}
                    src={img1} alt="yandex"/>
             </div>
-            <div className={cnCamera('Scroll', ['ModOnlyTouch', 'JsScroll'])}></div>
+            <div className={cnCamera('Scroll', ['JsScroll'])}></div>
           </div>
         </Pointable>
-        <div className={cnCamera('Stat', ['ModOnlyTouch'])}>
+        <div className={cnCamera('Stat')}>
           <span>Приближение: <span className="JsZoom">45</span>%</span>
           <span>Яркость: <span className="JsBrightness">50</span>%</span>
         </div>

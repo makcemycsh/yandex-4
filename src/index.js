@@ -1,10 +1,11 @@
-import React              from 'react';
-import ReactDOM           from 'react-dom';
-import './index.css';
-import App                from './App';
+import React    from 'react';
+import ReactDOM from 'react-dom';
 
-// import AppDesktop from './blocks/layout/layout@desktop';
-// import AppTouch   from './blocks/layout/layout@touch';
+import './styles/main.scss';
+import './index.css';
+
+import {AppClick} from './blocks/layout/layout@click';
+import {AppTouch} from './blocks/layout/layout@touch';
 
 import * as serviceWorker from './serviceWorker';
 import $                  from 'jquery';
@@ -20,14 +21,16 @@ if (isTouchDevice()) {
 }
 
 
-// const App = isTouchDevice() ? AppTouch : AppDesktop;
+const App = isTouchDevice() ? AppTouch : AppClick;
 
 
 ReactDOM.render(<App/>, document.getElementById('root'));
-if(isTouchDevice()) {
+
+
+if (isTouchDevice()) {
   $('.JsPointerEvent').each(function(i, e) {
     new PointerHandler(e);
-  })
+  });
 }
 
 serviceWorker.unregister();

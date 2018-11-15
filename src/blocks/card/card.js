@@ -2,6 +2,9 @@ import React, {Component}                              from 'react';
 import {cn}                                            from '@bem-react/classname';
 import {compose}                                       from '@bem-react/core';
 import {CardSizeL, CardSizeM, CardSizeS, CardCritical} from './_mod/index';
+import {RegistryConsumer}                              from '@bem-react/di';
+import {cnCamera}                                      from '../camera/camera';
+
 
 import Music   from '../music/music';
 import DataSet from '../data-set/data-set';
@@ -108,7 +111,16 @@ class Card extends Component {
   dataImage(data) {
     return (
       <div className={cnCard('Data', ['JsPointerEvent'])}>
-        <Camera/>
+        <RegistryConsumer>
+          {(registries) => {
+            const {layout} = registries;
+            const Camera = layout.get(cnCamera());
+
+            return (
+              <Camera/>
+            );
+          }}
+        </RegistryConsumer>
       </div>);
   }
 
