@@ -1,11 +1,15 @@
-.b-content {
-  color:  $text-color-main;
-  margin: 0 auto 80px auto;
-  &__title {
-    @extend %h1;
+.Content {
+  color:          #333;
+  width:          100%;
+  flex:           1 1 auto;
+  padding-bottom: 80px;
+  &-Title {
+    font-size:     2.25rem;
+    line-height:   2.625rem;
+    font-weight:   700;
     margin-bottom: 32px;
   }
-  &__inner {
+  &-Inner {
     flex:            1 0 auto;
     display:         grid;
     justify-content: center;
@@ -13,20 +17,24 @@
     grid-gap:        16px 0;
     width:           100%;
     max-width:       500px;
-    @include w-from($screen-md) {
+  }
+  &_Wrapper1280 {
+    max-width:          1280px;
+    min-width:          320px;
+    -webkit-box-sizing: border-box;
+    box-sizing:         border-box;
+    width:              100%;
+    margin:             0 auto;
+    padding:            0 20px;
+  }
+  @media (min-width: 768px) {
+    &-Inner {
       max-width:             1080px;
       grid-template-columns: repeat(6, minmax(100px, 1fr));
       grid-auto-flow:        dense row;
       grid-gap:              14px 20px;
     }
-    @include w-from($screen-xl) {
-      max-width: 100%;
-    }
   }
 }
 
-button {
-  &:active {
-    transform: scale(.98);
-  }
-}
+

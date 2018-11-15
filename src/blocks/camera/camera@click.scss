@@ -1,0 +1,25 @@
+@import "../../styles/mixins";
+@import "../../styles/vars";
+@import "../../styles/services";
+.Camera {
+  display:        flex;
+  flex-direction: column;
+  &-Stat {
+    display:         flex;
+    justify-content: space-between;
+    margin:          14px 0px 4px;
+  }
+  &-Img {
+    max-width:     100%;
+    max-height:    400px;
+    min-height:    300px;
+    position:      relative;
+    border-radius: 20px;
+    overflow:      hidden;
+    &Inner {
+      height:     100%;
+      max-height: 300px;
+      min-width:  100%;
+    }
+  }
+}

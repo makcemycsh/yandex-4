@@ -1,0 +1,30 @@
+@import "../../styles/mixins";
+@import "../../styles/vars";
+@import "../../styles/services";
+
+.Button {
+  border:        none;
+  outline:       none;
+  max-width:     142px;
+  width:         auto;
+  flex:          1 1;
+  padding:       16px 24px;
+  font-size:     20px;
+  line-height:   23px;
+  font-weight:   bold;
+  border-radius: 8px;
+  display:       inline-block;
+  box-sizing:    border-box;
+  &:active,
+  &:focus {
+    border:  none;
+    outline: none;
+  }
+  &-Inner {
+    width:           100%;
+    height:          100%;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+  }
+}

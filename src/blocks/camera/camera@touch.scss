@@ -1,0 +1,47 @@
+@import "../../styles/mixins";
+@import "../../styles/vars";
+@import "../../styles/services";
+.Camera {
+  display:        flex;
+  flex-direction: column;
+  &-Wrapper {
+    position:        absolute;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    top:             50%;
+    left:            50%;
+    transform:       translate(-50%, -50%);
+    touch-action:    none;
+    user-select:     none;
+  }
+  &-Stat {
+    display:         flex;
+    justify-content: space-between;
+    margin:          14px 30px 4px;
+  }
+  &-Scroll {
+    width:          20%;
+    height:         5px;
+    background:     rgba(black, .5);
+    border-radius:  3px;
+    position:       absolute;
+    bottom:         5px;
+    left:           50%;
+    transform:      translateX(-50%);
+    pointer-events: none;
+  }
+  &-Img {
+    max-width:     100%;
+    max-height:    400px;
+    min-height:    300px;
+    position:      relative;
+    border-radius: 20px;
+    overflow:      hidden;
+    &Inner {
+      height:     100%;
+      max-height: 100%;
+      min-width:  auto;
+    }
+  }
+}

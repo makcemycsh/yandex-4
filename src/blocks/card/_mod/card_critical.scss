@@ -1,0 +1,20 @@
+@import "../../../styles/vars";
+
+.Card {
+  &.Card_Type_critical {
+    background-color: $attent-color;
+    .Card-Head {
+      color: white;
+    }
+    .Card-Main {
+      background: $card-color;
+      transition: .3s ease-out;
+    }
+    .Card-Close {
+      color: white;
+    }
+    &:hover {
+      background-color: $attent-color;
+    }
+  }
+}
