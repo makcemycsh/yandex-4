@@ -31,7 +31,7 @@ class Music extends Component {
             <button className={cnMusic('Btn', ['Icon', 'Icon_Next'], {Next: true})}></button>
             <div className={cnMusic('Val')}>
               <input className={cnMusic('ValInput')} id='range-2' type="range" name="volume"
-                     min="0" max="100" defaultValue="${data.volume}"/>
+                     min="0" max="100" defaultValue={this.props.volume}/>
               <label htmlFor="range-2">{this.props.volume}%</label>
             </div>
           </div>

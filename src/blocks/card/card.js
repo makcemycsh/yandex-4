@@ -9,7 +9,6 @@ import {cnCamera}                                      from '../camera/camera';
 import Music   from '../music/music';
 import DataSet from '../data-set/data-set';
 import Button  from '../btn/btn';
-import Camera  from '../camera/camera';
 
 import imgSvg from '../../assets/img/Richdata.svg';
 import imgPng from '../../assets/img/Richdata@2x.png';

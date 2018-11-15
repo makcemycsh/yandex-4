@@ -11,7 +11,9 @@ class Head extends Component {
     return (
       <div className={cnHead()}>
         <div className={cnHead('Inner', ['Wrapper1280'])}>
-          <a href="index.html" className={cnHead('Logo')}></a>
+            <a href="index.html">
+            <div className={cnHead('Logo')}></div>
+            </a>
           <Menu/>
         </div>
       </div>

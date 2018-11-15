@@ -2,7 +2,6 @@ import React    from 'react';
 import ReactDOM from 'react-dom';
 
 import './styles/main.scss';
-import './index.css';
 
 import {AppClick} from './blocks/layout/layout@click';
 import {AppTouch} from './blocks/layout/layout@touch';
